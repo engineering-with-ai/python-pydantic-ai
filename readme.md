@@ -2,8 +2,8 @@
 
 ![](https://img.shields.io/gitlab/pipeline-status/engineering-with-ai/software-python-pydantic-ai?branch=main&logo=gitlab)
 ![](https://gitlab.com/engineering-with-ai/software-python-pydantic-ai/badges/main/coverage.svg)
-![](https://img.shields.io/badge/3.13.1-gray?logo=python)
-![](https://img.shields.io/badge/0.9.15-gray?logo=uv)
+![](https://img.shields.io/badge/3.14.1-gray?logo=python)
+![](https://img.shields.io/badge/0.10.9-gray?logo=uv)
 ![](https://img.shields.io/badge/llama-3.1-gray?logo=meta)
 
 > template for an installable python package that use domain mcp server and api tools as well as semantic memory 
