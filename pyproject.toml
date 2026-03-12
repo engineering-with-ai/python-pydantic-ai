@@ -55,5 +55,5 @@ omit = ["*/test_*.py", "tests/*", "*/main.py", "*/config.py"]
 
 [tool.uv.sources]
 python-pydantic-ai = { workspace = true }
-python-mcp-server = { path = "../python-mcp-server" }
+python-mcp-server = { git = "https://gitlab.com/engineering-with-ai/software-python-mcp-server.git" }
 
