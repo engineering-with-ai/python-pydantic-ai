@@ -1,6 +1,5 @@
 """Testcontainer fixtures with dynamic port allocation."""
 
-import os
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -29,27 +28,23 @@ class Container:
 def _start_container(
     image: str,
     port: int,
-    *,
-    env: dict[str, str] | None = None,
-    wait_for_log: str | None = None,
+    wait_for_log: str,
 ) -> Generator[Container]:
     """Start a generic Docker container with dynamic port. Internal building block.
 
     Args:
-        image: Docker image
+        image: Docker image (e.g. "neo4j:latest")
         port: Internal container port to expose
-        env: Environment variables
         wait_for_log: Log message indicating readiness
 
     Yields:
         Container with http:// URL and dynamic port
     """
-    c = DockerContainer(image).with_exposed_ports(port)
-    if env:
-        for k, v in env.items():
-            c = c.with_env(k, v)
-    if wait_for_log:
-        c = c.waiting_for(LogMessageWaitStrategy(wait_for_log))
+    c = (
+        DockerContainer(image)
+        .with_exposed_ports(port)
+        .waiting_for(LogMessageWaitStrategy(wait_for_log))
+    )
 
     with c:
         mapped = int(c.get_exposed_port(port))
@@ -62,23 +57,22 @@ def _start_container(
 
 @contextmanager
 def start_postgres(
+    password: str,
     image: str = "postgres:15",
-    password: str | None = None,
     username: str = "postgres",
     dbname: str = "postgres",
 ) -> Generator[Container]:
     """Start a Postgres container with dynamic port.
 
     Args:
+        password: DB password
         image: Docker image (postgres:15, pgvector/pgvector:pg16)
-        password: DB password. Defaults to POSTGRES_PASSWORD env var.
         username: Database username
         dbname: Database name
 
     Yields:
         Container with postgresql:// URL and dynamic port
     """
-    password = password or os.environ["POSTGRES_PASSWORD"]
     with PostgresContainer(image, username=username, password=password, dbname=dbname) as c:
         port = int(c.get_exposed_port(5432))
         yield Container(
@@ -98,13 +92,16 @@ def start_neo4j(password: str) -> Generator[Container]:
     Yields:
         Container with bolt:// URL and dynamic port
     """
-    with _start_container(
-        "neo4j:latest",
-        7687,
-        env={"NEO4J_AUTH": f"neo4j/{password}"},
-    ) as c:
+    c = (
+        DockerContainer("neo4j:latest")
+        .with_exposed_ports(7687)
+        .with_env("NEO4J_AUTH", f"neo4j/{password}")
+    )
+
+    with c:
+        mapped = int(c.get_exposed_port(7687))
         yield Container(
-            host=c.host,
-            port=c.port,
-            url=f"bolt://localhost:{c.port}",
+            host="localhost",
+            port=mapped,
+            url=f"bolt://localhost:{mapped}",
         )

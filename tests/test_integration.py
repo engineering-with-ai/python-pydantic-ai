@@ -1,4 +1,5 @@
 import asyncio
+import os
 import time
 from collections.abc import Generator
 
@@ -25,7 +26,10 @@ def test_containers() -> Generator[tuple[str, str]]:
 
     with (
         start_neo4j(neo4j_password) as neo4j,
-        start_postgres(image="pgvector/pgvector:pg16") as postgres,
+        start_postgres(
+            password=os.environ["POSTGRES_PASSWORD"],
+            image="pgvector/pgvector:pg16",
+        ) as postgres,
     ):
         # Wait for Neo4j
         max_retries = 30
