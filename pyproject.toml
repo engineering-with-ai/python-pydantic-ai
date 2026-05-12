@@ -14,6 +14,12 @@ dependencies = [
     "python-mcp-server",
 ]
 
+[tool.uv]
+constraint-dependencies = [
+    "urllib3>=2.7.0",           # CVE-2026-44431, CVE-2026-44432
+    "python-multipart>=0.0.27", # CVE-2026-42561
+]
+
 [dependency-groups]
 dev = [
     "asyncpg-stubs>=0.31",
@@ -27,7 +33,7 @@ dev = [
     "pip-audit>=2.6.1",
     "pytest-cov>=6.0.0",
     "deptry>=0.23.0",
-    "pip>=25.1.1",
+    "pip>=26.1",  # CVE-2026-6357
     "testcontainers[postgres]>=4.9.0",
     "pytest-asyncio>=0.25.2",
     "python-pydantic-ai",

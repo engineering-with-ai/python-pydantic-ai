@@ -73,7 +73,9 @@ def start_postgres(
     Yields:
         Container with postgresql:// URL and dynamic port
     """
-    with PostgresContainer(image, username=username, password=password, dbname=dbname) as c:
+    with PostgresContainer(
+        image, username=username, password=password, dbname=dbname
+    ) as c:
         port = int(c.get_exposed_port(5432))
         yield Container(
             host="localhost",
