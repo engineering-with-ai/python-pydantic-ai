@@ -3,6 +3,7 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
+from urllib.parse import quote_plus
 
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.wait_strategies import LogMessageWaitStrategy
@@ -80,7 +81,7 @@ def start_postgres(
         yield Container(
             host="localhost",
             port=port,
-            url=f"postgres://{username}:{password}@localhost:{port}/{dbname}",
+            url=f"postgres://{quote_plus(username)}:{quote_plus(password)}@localhost:{port}/{dbname}",
         )
 
 
